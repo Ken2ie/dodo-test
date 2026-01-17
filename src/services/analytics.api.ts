@@ -66,16 +66,61 @@ const calculateMetrics = (deals: Deal[]): RevenueData => {
     };
 };
 
+export interface RevenueStatsFilter {
+    timeRange?: string;
+    status?: string;
+}
+
 export const analyticsApi = api.injectEndpoints({
     endpoints: (build) => ({
-        getRevenueStats: build.query<RevenueData, string>({
-            queryFn: async (userId) => {
-                // Filter deals for the specific user to generate stats
-                const userDeals = MOCK_DEALS.filter(d => d.userId === userId);
+        getRevenueStats: build.query<RevenueData, { userId: string; filter?: RevenueStatsFilter }>({
+            queryFn: async ({ userId, filter }) => {
+                await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate network latency
+                // Filter deals for the specific user
+                let userDeals = MOCK_DEALS.filter(d => d.userId === userId);
+
+                // Apply Filters
+                if (filter?.status && filter.status !== 'all') {
+                    if (filter.status === 'closed') {
+                        userDeals = userDeals.filter(d => ['closed_won', 'closed_lost'].includes(d.stage));
+                    } else if (filter.status === 'active') {
+                        userDeals = userDeals.filter(d => !['closed_won', 'closed_lost'].includes(d.stage));
+                    } else if (filter.status === 'pending') {
+                        userDeals = userDeals.filter(d => ['proposal', 'negotiation'].includes(d.stage));
+                    }
+                }
+
+                if (filter?.timeRange) {
+                    const now = new Date();
+                    const dealDate = (d: Deal) => new Date(d.createdAt);
+
+                    if (filter.timeRange === 'this_month') {
+                        userDeals = userDeals.filter(d => {
+                            const date = dealDate(d);
+                            return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+                        });
+                    } else if (filter.timeRange === 'last_month') {
+                        const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                        userDeals = userDeals.filter(d => {
+                            const date = dealDate(d);
+                            return date.getMonth() === lastMonth.getMonth() && date.getFullYear() === lastMonth.getFullYear();
+                        });
+                    } else if (filter.timeRange === 'this_quarter') {
+                        const currentQuarter = Math.floor((now.getMonth() + 3) / 3);
+                        userDeals = userDeals.filter(d => {
+                            const date = dealDate(d);
+                            const quarter = Math.floor((date.getMonth() + 3) / 3);
+                            return quarter === currentQuarter && date.getFullYear() === now.getFullYear();
+                        });
+                    } else if (filter.timeRange === 'this_year') {
+                        userDeals = userDeals.filter(d => dealDate(d).getFullYear() === now.getFullYear());
+                    }
+                }
+
                 const data = calculateMetrics(userDeals);
                 return { data };
             },
-            providesTags: ['Task'], // Reuse tag for simplicity, or add 'Deal'
+            providesTags: ['Task'],
         }),
     }),
     overrideExisting: true,

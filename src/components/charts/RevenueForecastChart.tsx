@@ -1,78 +1,72 @@
-import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useCrmAnalytics } from "@/hooks/useCrmAnalytics";
 import { useGetDealsQuery } from "@/services/crm.api";
 import { useTenant } from "@/hooks/useTenant";
-import { useMemo } from "react";
-import { formatDate } from "@/utils/date";
-import { CHART_COLORS } from "@/config/colors";
+import { filterDeals } from "@/utils/filterDeals";
+import { ChartEmptyState } from "./ChartEmptyState";
 
-export function RevenueForecastChart() {
+interface RevenueForecastChartProps {
+    timeRange?: string;
+    status?: string;
+}
+
+export function RevenueForecastChart({ timeRange, status }: RevenueForecastChartProps) {
     const { tenantId } = useTenant();
     const { data: deals = [] } = useGetDealsQuery(tenantId);
-    const { dealsOverTime } = useCrmAnalytics(deals);
 
-    const chartData = useMemo(() => {
-        return Object.entries(dealsOverTime)
-            .sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime())
-            .map(([date, count]) => ({
-                date: new Date(date),
-                label: formatDate(date),
-                count
-            }));
-    }, [dealsOverTime]);
+    const filteredDeals = filterDeals(deals, { timeRange, status });
+    const { dealsOverTime } = useCrmAnalytics(filteredDeals);
 
-    if (chartData.length === 0) {
-        return null;
+    const data = Object.entries(dealsOverTime)
+        .sort(([dateA], [dateB]) => new Date(dateA).getTime() - new Date(dateB).getTime())
+        .map(([date, count]) => ({
+            name: new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+            deals: count,
+            revenue: count * 15000 // Mock avg value projection
+        }));
+
+    if (deals.length > 0 && data.length === 0) {
+        return (
+            <Card className="h-full">
+                <CardHeader>
+                    <CardTitle>Revenue Forecast</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-[300px]">
+                        <ChartEmptyState />
+                    </div>
+                </CardContent>
+            </Card>
+        );
     }
 
     return (
-        <Card className="col-span-1 md:col-span-2">
+        <Card className="h-full">
             <CardHeader>
-                <CardTitle>Deal Volume Forecast</CardTitle>
-                <CardDescription>
-                    New deals created over time
-                </CardDescription>
+                <CardTitle>Revenue Forecast</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="h-[300px] w-full">
+                <div className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                        <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                             <defs>
-                                <linearGradient id="colorDeals" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor={CHART_COLORS.info} stopOpacity={0.1} />
-                                    <stop offset="95%" stopColor={CHART_COLORS.info} stopOpacity={0} />
+                                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={CHART_COLORS.grid} />
-                            <XAxis
-                                dataKey="label"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 12, fill: CHART_COLORS.axis }}
-                                dy={10}
-                            />
-                            <YAxis
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 12, fill: CHART_COLORS.axis }}
-                                allowDecimals={false}
-                            />
-                            <Tooltip
-                                contentStyle={{
-                                    backgroundColor: CHART_COLORS.tooltipBg,
-                                    borderColor: CHART_COLORS.tooltipBorder,
-                                    color: CHART_COLORS.tooltipText,
-                                    borderRadius: '8px'
-                                }}
-                            />
+                            <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+                            <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" vertical={false} />
+                            <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                             <Area
                                 type="monotone"
-                                dataKey="count"
-                                stroke={CHART_COLORS.info}
-                                strokeWidth={2}
+                                dataKey="revenue"
+                                stroke="var(--primary)"
                                 fillOpacity={1}
-                                fill="url(#colorDeals)"
+                                fill="url(#colorRevenue)"
+                                strokeWidth={2}
                             />
                         </AreaChart>
                     </ResponsiveContainer>

@@ -5,9 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { formatCurrency, formatCompactNumber } from "@/utils/format";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import { useMemo } from "react";
+import { ChartEmptyState } from "./ChartEmptyState";
 
-export function RevenueChart() {
-    const { revenue, isLoading } = useDashboardStats();
+interface RevenueChartProps {
+    timeRange?: string;
+    status?: string;
+}
+
+export function RevenueChart({ timeRange, status }: RevenueChartProps) {
+    const { revenue, isLoading } = useDashboardStats(timeRange, status);
 
     const chartData = useMemo(() => {
         if (!revenue?.history) return [];
@@ -28,7 +34,20 @@ export function RevenueChart() {
         );
     }
 
-    if (!revenue) return null;
+    if (!revenue || chartData.length === 0) {
+        return (
+            <Card className="col-span-1 md:col-span-2">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-base font-normal">Revenue over time</CardTitle>
+                </CardHeader>
+                <CardContent className="pl-0">
+                    <div className="h-[300px] w-full">
+                        <ChartEmptyState />
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <Card className="col-span-1 md:col-span-2">

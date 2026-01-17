@@ -7,6 +7,7 @@ import Image from "next/image";
 
 import { TenantSwitcher } from "./TenantSwitcher";
 import { SIDEBAR_ROUTES } from "@/config/routes";
+import { Tooltip } from "../ui/Tooltip";
 
 export function Sidebar({ className, isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }: any) {
     const pathname = usePathname();
@@ -35,7 +36,7 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, isMobileOpen, 
                 `}
             >
                 <div className="flex flex-col gap-4">
-                    <div className={`flex items-center p-4 ${isCollapsed ? "md:justify-center" : "justify-between"}`}>
+                    <div className={`flex items-center pb-2 p-4 ${isCollapsed ? "md:justify-center" : "justify-between"}`}>
                         <Link href="/" onClick={() => { setIsMobileOpen(false); setIsCollapsed(false); }} className="cursor-pointer hover:opacity-80 transition-opacity">
                             <Image src="/logo.svg" alt="Logo" width={30} height={30} />
                         </Link>
@@ -65,12 +66,11 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, isMobileOpen, 
                                 const Icon = route.icon;
                                 const isActive = pathname === route.href;
 
-                                return (
+                                const LinkComponent = (
                                     <Link
                                         key={route.href}
                                         href={route.href}
                                         onClick={() => setIsMobileOpen(false)}
-                                        title={isCollapsed ? route.label : ""}
                                         className={`flex items-center text-[15px] px-3 py-1.5 rounded-lg transition-colors group ${isActive
                                             ? "bg-gray-200 dark:bg-zinc-800 text-black dark:text-white font-medium"
                                             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-900"
@@ -82,21 +82,30 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, isMobileOpen, 
                                         {!isCollapsed && route.label}
                                     </Link>
                                 );
+
+                                if (isCollapsed) {
+                                    return (
+                                        <Tooltip key={route.href} content={route.label} side="right">
+                                            {LinkComponent}
+                                        </Tooltip>
+                                    );
+                                }
+
+                                return LinkComponent;
                             })}
                         </nav>
-                        {isCollapsed && <hr className="mx-2 text-gray-200"/>}
+                        {isCollapsed && <hr className="mx-2 text-gray-200" />}
                         <nav className="flex-1 px-4 space-y-2">
                             {!isCollapsed && <span className="text-sm font-base text-gray-500 dark:text-gray-400 block px-2 !mb-2">Favourites</span>}
                             {SIDEBAR_ROUTES.favorites.map((route) => {
                                 const Icon = route.icon;
                                 const isActive = pathname === route.href;
 
-                                return (
+                                const LinkComponent = (
                                     <Link
                                         key={route.href}
                                         href={route.href}
                                         onClick={() => setIsMobileOpen(false)}
-                                        title={isCollapsed ? route.label : ""}
                                         className={`flex items-center text-[15px] px-3 py-1.5 rounded-lg transition-colors group ${isActive
                                             ? "bg-gray-200 dark:bg-zinc-800 text-black dark:text-white font-medium"
                                             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-900"
@@ -104,10 +113,20 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, isMobileOpen, 
                                     >
                                         <div className={`flex text-black dark:text-gray-300 group-hover:text-gray-700 dark:group-hover:text-white ${!isCollapsed ? "mr-3" : ""}`}>
                                             <Icon className={`!w-5 !h-5 `} />
-                                        </div>                                       
+                                        </div>
                                         {!isCollapsed && route.label}
                                     </Link>
                                 );
+
+                                if (isCollapsed) {
+                                    return (
+                                        <Tooltip key={route.href} content={route.label} side="right">
+                                            {LinkComponent}
+                                        </Tooltip>
+                                    );
+                                }
+
+                                return LinkComponent;
                             })}
                         </nav>
                     </div>
@@ -125,7 +144,7 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, isMobileOpen, 
                             </div>
                         )
                     }
-                    <TenantSwitcher />
+                    <TenantSwitcher isCollapsed={isCollapsed} />
                 </div>
             </div>
         </>

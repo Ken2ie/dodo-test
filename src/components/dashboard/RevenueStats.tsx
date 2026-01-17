@@ -3,8 +3,13 @@
 import { StatCard } from "@/components/ui/StatCard";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 
-export function RevenueStats() {
-    const { revenue, isLoading } = useDashboardStats();
+interface RevenueStatsProps {
+    timeRange?: string;
+    status?: string;
+}
+
+export function RevenueStats({ timeRange, status }: RevenueStatsProps) {
+    const { revenue, isLoading } = useDashboardStats(timeRange, status);
 
     if (isLoading) {
         return (
@@ -20,8 +25,8 @@ export function RevenueStats() {
 
     return (
         <div className="col-span-3">
-            <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
-                <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x border-gray-100">
+            <div className="rounded-xl bg-card text-card-foreground shadow-sm">
+                <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-100">
                     {revenue.stats.map((stat, index) => (
                         <div key={index} className="p-6">
                             <StatCard
