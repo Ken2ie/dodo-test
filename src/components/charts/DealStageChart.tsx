@@ -1,3 +1,5 @@
+"use client";
+
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { useCrmAnalytics } from "@/hooks/useCrmAnalytics";
@@ -5,24 +7,8 @@ import { useGetDealsQuery } from "@/services/crm.api";
 import { useTenant } from "@/hooks/useTenant";
 import { filterDeals } from "@/utils/filterDeals";
 import { ChartEmptyState } from "./ChartEmptyState";
-
-const COLORS = {
-    lead: '#94a3b8',
-    contacted: '#60a5fa',
-    proposal: '#818cf8',
-    negotiation: '#c084fc',
-    closed_won: '#34d399',
-    closed_lost: '#f87171'
-};
-
-const STAGE_LABELS = {
-    lead: 'Lead',
-    contacted: 'Contacted',
-    proposal: 'Proposal',
-    negotiation: 'Negotiation',
-    closed_won: 'Won',
-    closed_lost: 'Lost'
-};
+import { selectDealStageChartData } from "@/selectors/crm.selectors";
+import { useMemo } from "react";
 
 interface DealStageChartProps {
     timeRange?: string;
@@ -36,13 +22,7 @@ export function DealStageChart({ timeRange, status }: DealStageChartProps) {
     const filteredDeals = filterDeals(deals, { timeRange, status });
     const { dealsByStage, totalDeals } = useCrmAnalytics(filteredDeals);
 
-    const data = Object.entries(dealsByStage)
-        .filter(([_, count]) => count > 0)
-        .map(([stage, count]) => ({
-            name: STAGE_LABELS[stage as keyof typeof STAGE_LABELS],
-            value: count,
-            color: COLORS[stage as keyof typeof COLORS]
-        }));
+    const data = useMemo(() => selectDealStageChartData(dealsByStage), [dealsByStage]);
 
     if (deals.length > 0 && data.length === 0) {
         return (

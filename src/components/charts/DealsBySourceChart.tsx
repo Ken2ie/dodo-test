@@ -7,6 +7,8 @@ import { useGetDealsQuery } from "@/services/crm.api";
 import { useTenant } from "@/hooks/useTenant";
 import { filterDeals } from "@/utils/filterDeals";
 import { ChartEmptyState } from "./ChartEmptyState";
+import { selectDealsBySourceChartData } from "@/selectors/crm.selectors";
+import { useMemo } from "react";
 
 interface DealsBySourceChartProps {
     timeRange?: string;
@@ -20,10 +22,7 @@ export function DealsBySourceChart({ timeRange, status }: DealsBySourceChartProp
     const filteredDeals = filterDeals(deals, { timeRange, status });
     const { dealsBySource } = useCrmAnalytics(filteredDeals);
 
-    const data = Object.entries(dealsBySource).map(([source, count]) => ({
-        name: source.charAt(0).toUpperCase() + source.slice(1),
-        count
-    }));
+    const data = useMemo(() => selectDealsBySourceChartData(dealsBySource), [dealsBySource]);
 
     if (deals.length > 0 && data.every(d => d.count === 0)) {
         return (
