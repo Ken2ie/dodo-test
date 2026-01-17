@@ -10,8 +10,8 @@ export const MOCK_DEALS: Deal[] = [
         companyName: 'Acme Corp',
         contactName: 'Alice Johnson',
         source: 'outbound',
-        closingDate: '2023-12-15',
-        createdAt: '2023-11-01',
+        closingDate: '2025-12-15',
+        createdAt: '2025-11-01',
         userId: 'u1'
     },
     {
@@ -22,8 +22,8 @@ export const MOCK_DEALS: Deal[] = [
         companyName: 'Globex',
         contactName: 'Bob Smith',
         source: 'referral',
-        closingDate: '2023-11-20',
-        createdAt: '2023-10-15',
+        closingDate: '2025-11-20',
+        createdAt: '2025-10-15',
         userId: 'u1'
     },
     {
@@ -34,8 +34,8 @@ export const MOCK_DEALS: Deal[] = [
         companyName: 'Soylent Corp',
         contactName: 'Carol White',
         source: 'linkedin',
-        closingDate: '2024-01-10',
-        createdAt: '2023-11-01',
+        closingDate: '2026-02-10',
+        createdAt: '2026-01-01',
         userId: 'u1'
     },
     {
@@ -46,8 +46,8 @@ export const MOCK_DEALS: Deal[] = [
         companyName: 'Initech',
         contactName: 'Dave Brown',
         source: 'website',
-        closingDate: '2024-02-01',
-        createdAt: '2023-11-25',
+        closingDate: '2026-03-01',
+        createdAt: '2026-01-10',
         userId: 'u1'
     },
     {
@@ -58,8 +58,8 @@ export const MOCK_DEALS: Deal[] = [
         companyName: 'Umbrella Corp',
         contactName: 'Eve Black',
         source: 'outbound',
-        closingDate: '2023-12-20',
-        createdAt: '2023-10-01',
+        closingDate: '2025-12-20',
+        createdAt: '2025-10-01',
         userId: 'u1'
     },
 
@@ -72,8 +72,8 @@ export const MOCK_DEALS: Deal[] = [
         companyName: 'Stark Industries',
         contactName: 'Tony S.',
         source: 'referral',
-        closingDate: '2023-10-30',
-        createdAt: '2023-09-01',
+        closingDate: '2025-10-30',
+        createdAt: '2025-09-01',
         userId: 'u2'
     },
     {
@@ -84,8 +84,8 @@ export const MOCK_DEALS: Deal[] = [
         companyName: 'Wayne Enterprises',
         contactName: 'Bruce W.',
         source: 'linkedin',
-        closingDate: '2023-12-05',
-        createdAt: '2023-11-10',
+        closingDate: '2025-12-05',
+        createdAt: '2025-11-10',
         userId: 'u2'
     },
     {
@@ -96,8 +96,8 @@ export const MOCK_DEALS: Deal[] = [
         companyName: 'Cyberdyne',
         contactName: 'Miles Dyson',
         source: 'website',
-        closingDate: '2024-03-01',
-        createdAt: '2023-11-28',
+        closingDate: '2026-04-01',
+        createdAt: '2026-01-15',
         userId: 'u2'
     }
 ];

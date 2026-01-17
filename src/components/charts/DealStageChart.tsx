@@ -3,41 +3,57 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { useCrmAnalytics } from "@/hooks/useCrmAnalytics";
 import { useGetDealsQuery } from "@/services/crm.api";
 import { useTenant } from "@/hooks/useTenant";
-import { useMemo } from "react";
-import { STAGE_COLORS, CHART_COLORS } from "@/config/colors";
+import { filterDeals } from "@/utils/filterDeals";
 
-export function DealStageChart() {
+const COLORS = {
+    lead: '#94a3b8',
+    contacted: '#60a5fa',
+    proposal: '#818cf8',
+    negotiation: '#c084fc',
+    closed_won: '#34d399',
+    closed_lost: '#f87171'
+};
+
+const STAGE_LABELS = {
+    lead: 'Lead',
+    contacted: 'Contacted',
+    proposal: 'Proposal',
+    negotiation: 'Negotiation',
+    closed_won: 'Won',
+    closed_lost: 'Lost'
+};
+
+interface DealStageChartProps {
+    timeRange?: string;
+    status?: string;
+}
+
+export function DealStageChart({ timeRange, status }: DealStageChartProps) {
     const { tenantId } = useTenant();
     const { data: deals = [] } = useGetDealsQuery(tenantId);
-    const { dealsByStage, totalDeals } = useCrmAnalytics(deals);
 
-    const chartData = useMemo(() => {
-        return Object.entries(dealsByStage).map(([stage, count]) => ({
-            name: stage.replace('_', ' ').toUpperCase(),
+    const filteredDeals = filterDeals(deals, { timeRange, status });
+    const { dealsByStage, totalDeals } = useCrmAnalytics(filteredDeals);
+
+    const data = Object.entries(dealsByStage)
+        .filter(([_, count]) => count > 0)
+        .map(([stage, count]) => ({
+            name: STAGE_LABELS[stage as keyof typeof STAGE_LABELS],
             value: count,
-            fill: STAGE_COLORS[stage as keyof typeof STAGE_COLORS] || '#E5E7EB'
-        })).filter(item => item.value > 0);
-    }, [dealsByStage]);
-
-    if (!totalDeals) {
-        return (
-            <Card className="col-span-1 min-h-[300px] flex items-center justify-center">
-                <p className="text-gray-400">No deals in pipeline</p>
-            </Card>
-        );
-    }
+            color: COLORS[stage as keyof typeof COLORS]
+        }));
 
     return (
-        <Card className="col-span-1">
+        <Card className="h-full">
             <CardHeader>
-                <CardTitle>Deal Stages</CardTitle>
+                <CardTitle>Pipeline Health</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="h-[300px] w-full">
+                <div className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie
-                                data={chartData}
+                                data={data}
                                 cx="50%"
                                 cy="50%"
                                 innerRadius={60}
@@ -45,21 +61,18 @@ export function DealStageChart() {
                                 paddingAngle={5}
                                 dataKey="value"
                             >
-                                {chartData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                {data.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color} />
                                 ))}
                             </Pie>
-                            <Tooltip
-                                contentStyle={{
-                                    backgroundColor: CHART_COLORS.tooltipBg,
-                                    borderColor: CHART_COLORS.tooltipBorder,
-                                    color: CHART_COLORS.tooltipText,
-                                    borderRadius: '8px'
-                                }}
-                            />
-                            <Legend verticalAlign="bottom" height={36} />
+                            <Tooltip />
+                            <Legend />
                         </PieChart>
                     </ResponsiveContainer>
+                </div>
+                <div className="mt-4 text-center">
+                    <div className="text-3xl font-bold">{totalDeals}</div>
+                    <p className="text-xs text-muted-foreground">Total Deals</p>
                 </div>
             </CardContent>
         </Card>

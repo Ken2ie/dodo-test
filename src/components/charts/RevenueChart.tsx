@@ -6,8 +6,13 @@ import { formatCurrency, formatCompactNumber } from "@/utils/format";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import { useMemo } from "react";
 
-export function RevenueChart() {
-    const { revenue, isLoading } = useDashboardStats();
+interface RevenueChartProps {
+    timeRange?: string;
+    status?: string;
+}
+
+export function RevenueChart({ timeRange, status }: RevenueChartProps) {
+    const { revenue, isLoading } = useDashboardStats(timeRange, status);
 
     const chartData = useMemo(() => {
         if (!revenue?.history) return [];
