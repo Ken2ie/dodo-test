@@ -4,6 +4,7 @@ import { useCrmAnalytics } from "@/hooks/useCrmAnalytics";
 import { useGetDealsQuery } from "@/services/crm.api";
 import { useTenant } from "@/hooks/useTenant";
 import { filterDeals } from "@/utils/filterDeals";
+import { ChartEmptyState } from "./ChartEmptyState";
 
 interface RevenueForecastChartProps {
     timeRange?: string;
@@ -24,6 +25,21 @@ export function RevenueForecastChart({ timeRange, status }: RevenueForecastChart
             deals: count,
             revenue: count * 15000 // Mock avg value projection
         }));
+
+    if (deals.length > 0 && data.length === 0) {
+        return (
+            <Card className="h-full">
+                <CardHeader>
+                    <CardTitle>Revenue Forecast</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-[300px]">
+                        <ChartEmptyState />
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <Card className="h-full">

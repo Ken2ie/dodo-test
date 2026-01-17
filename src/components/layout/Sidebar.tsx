@@ -7,6 +7,7 @@ import Image from "next/image";
 
 import { TenantSwitcher } from "./TenantSwitcher";
 import { SIDEBAR_ROUTES } from "@/config/routes";
+import { Tooltip } from "../ui/Tooltip";
 
 export function Sidebar({ className, isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }: any) {
     const pathname = usePathname();
@@ -65,12 +66,11 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, isMobileOpen, 
                                 const Icon = route.icon;
                                 const isActive = pathname === route.href;
 
-                                return (
+                                const LinkComponent = (
                                     <Link
                                         key={route.href}
                                         href={route.href}
                                         onClick={() => setIsMobileOpen(false)}
-                                        title={isCollapsed ? route.label : ""}
                                         className={`flex items-center text-[15px] px-3 py-1.5 rounded-lg transition-colors group ${isActive
                                             ? "bg-gray-200 dark:bg-zinc-800 text-black dark:text-white font-medium"
                                             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-900"
@@ -82,6 +82,16 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, isMobileOpen, 
                                         {!isCollapsed && route.label}
                                     </Link>
                                 );
+
+                                if (isCollapsed) {
+                                    return (
+                                        <Tooltip key={route.href} content={route.label} side="right">
+                                            {LinkComponent}
+                                        </Tooltip>
+                                    );
+                                }
+
+                                return LinkComponent;
                             })}
                         </nav>
                         {isCollapsed && <hr className="mx-2 text-gray-200" />}
@@ -91,12 +101,11 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, isMobileOpen, 
                                 const Icon = route.icon;
                                 const isActive = pathname === route.href;
 
-                                return (
+                                const LinkComponent = (
                                     <Link
                                         key={route.href}
                                         href={route.href}
                                         onClick={() => setIsMobileOpen(false)}
-                                        title={isCollapsed ? route.label : ""}
                                         className={`flex items-center text-[15px] px-3 py-1.5 rounded-lg transition-colors group ${isActive
                                             ? "bg-gray-200 dark:bg-zinc-800 text-black dark:text-white font-medium"
                                             : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-900"
@@ -108,6 +117,16 @@ export function Sidebar({ className, isCollapsed, setIsCollapsed, isMobileOpen, 
                                         {!isCollapsed && route.label}
                                     </Link>
                                 );
+
+                                if (isCollapsed) {
+                                    return (
+                                        <Tooltip key={route.href} content={route.label} side="right">
+                                            {LinkComponent}
+                                        </Tooltip>
+                                    );
+                                }
+
+                                return LinkComponent;
                             })}
                         </nav>
                     </div>

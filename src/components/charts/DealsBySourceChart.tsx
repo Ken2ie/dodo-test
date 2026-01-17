@@ -6,6 +6,7 @@ import { useCrmAnalytics } from "@/hooks/useCrmAnalytics";
 import { useGetDealsQuery } from "@/services/crm.api";
 import { useTenant } from "@/hooks/useTenant";
 import { filterDeals } from "@/utils/filterDeals";
+import { ChartEmptyState } from "./ChartEmptyState";
 
 interface DealsBySourceChartProps {
     timeRange?: string;
@@ -23,6 +24,21 @@ export function DealsBySourceChart({ timeRange, status }: DealsBySourceChartProp
         name: source.charAt(0).toUpperCase() + source.slice(1),
         count
     }));
+
+    if (deals.length > 0 && data.every(d => d.count === 0)) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Deals by Source</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-[300px]">
+                        <ChartEmptyState />
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <Card>

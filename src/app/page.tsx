@@ -55,7 +55,7 @@ export default function Home() {
             {revenue ? formatCurrency(revenue.totalRevenue) : "..."}
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:w-full">
           <Select
             // Time Range Filter
             value={timeRange}
@@ -66,7 +66,7 @@ export default function Home() {
               { label: "This Quarter", value: "this_quarter", icon: Calendar },
               { label: "This Year", value: "this_year", icon: Calendar },
             ]}
-            className="w-[160px] border-gray-300 rounded-lg border-2"
+            className="w-[160px] sm:w-full border-gray-300 rounded-lg border-2"
             placeholder="Time Range"
           />
           <Select
@@ -78,7 +78,7 @@ export default function Home() {
               { label: "Pending", value: "pending", icon: Clock },
               { label: "Closed", value: "closed", icon: CheckCircle2 },
             ]}
-            className="w-[160px] border-gray-300 rounded-lg border-2"
+            className="w-[160px] sm:w-full border-gray-300 rounded-lg border-2"
             placeholder="Status"
           />
         </div>

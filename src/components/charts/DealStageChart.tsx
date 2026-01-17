@@ -4,6 +4,7 @@ import { useCrmAnalytics } from "@/hooks/useCrmAnalytics";
 import { useGetDealsQuery } from "@/services/crm.api";
 import { useTenant } from "@/hooks/useTenant";
 import { filterDeals } from "@/utils/filterDeals";
+import { ChartEmptyState } from "./ChartEmptyState";
 
 const COLORS = {
     lead: '#94a3b8',
@@ -42,6 +43,25 @@ export function DealStageChart({ timeRange, status }: DealStageChartProps) {
             value: count,
             color: COLORS[stage as keyof typeof COLORS]
         }));
+
+    if (deals.length > 0 && data.length === 0) {
+        // Data exists but all filtered out or zero
+        return (
+            <Card className="h-full">
+                <CardHeader>
+                    <CardTitle>Pipeline Health</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-[300px]">
+                        <ChartEmptyState
+                            title="No deals found"
+                            description="Adjust filters to see deal stages."
+                        />
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
         <Card className="h-full">
