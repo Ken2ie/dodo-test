@@ -16,11 +16,11 @@ export default function Home() {
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="text-gray-500 text-sm font-medium mb-1">Total Pipeline Value</div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+        <div className="flex flex-col">
+          <div className="text-muted-foreground text-[30px] font-bold mb-1">Total Pipeline Value</div>
+          <span className="text-[30px] mt-[-10px] bg-gradient-to-r from-orange-300 to-orange-600 text-transparent bg-clip-text font-bold tracking-tight text-foreground">
             {revenue ? formatCurrency(revenue.totalRevenue) : "..."}
-          </h1>
+          </span>
         </div>
         <div className="flex items-center gap-2">
           {/* Placeholders for future filters */}

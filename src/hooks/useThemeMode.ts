@@ -3,22 +3,19 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
-export const useThemeMode = () => {
-    const { theme, setTheme, systemTheme } = useTheme();
+export function useThemeMode() {
+    const { theme, setTheme, resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
-    // Avoid hydration mismatch
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    const currentTheme = theme === 'system' ? systemTheme : theme;
+    const isDark = mounted && (theme === "dark" || resolvedTheme === "dark");
 
-    return {
-        theme,
-        setTheme,
-        isDark: mounted && currentTheme === 'dark',
-        toggleTheme: () => setTheme(currentTheme === 'dark' ? 'light' : 'dark'),
-        mounted
+    const toggleTheme = () => {
+        setTheme(isDark ? "light" : "dark");
     };
-};
+
+    return { isDark, toggleTheme, mounted };
+}

@@ -5,13 +5,13 @@ import { usePathname } from "next/navigation";
 
 export type HeaderProps = {
     className?: string;
+    onMenuClick?: () => void;
 };
 
-import { TenantSwitcher } from "@/components/layout/TenantSwitcher";
-import { Search, Sun, Moon } from "lucide-react";
+import { Search, Sun, Moon, Menu } from "lucide-react";
 import { useThemeMode } from "@/hooks/useThemeMode";
 
-export function Header({ className }: HeaderProps) {
+export function Header({ className, onMenuClick }: HeaderProps) {
     const pathname = usePathname();
     const { isDark, toggleTheme, mounted } = useThemeMode();
 
@@ -25,7 +25,15 @@ export function Header({ className }: HeaderProps) {
     return (
         <header className={className}>
             <div className="p-4 flex items-center justify-between h-16 bg-white/50 backdrop-blur-sm px-6">
-                <Breadcrumbs items={breadcrumbItems} />
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={onMenuClick}
+                        className="md:hidden p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-md transition-colors"
+                    >
+                        <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                    </button>
+                    <Breadcrumbs items={breadcrumbItems} />
+                </div>
 
                 <div className="flex items-center gap-4">
                     <div className="relative">
@@ -36,15 +44,6 @@ export function Header({ className }: HeaderProps) {
                             className="h-9 w-[200px] lg:w-[300px] rounded-md border border-gray-200 bg-gray-50 pl-8 pr-4 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all"
                         />
                     </div>
-                    {mounted && (
-                        <button
-                            onClick={toggleTheme}
-                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
-                            title="Toggle Theme"
-                        >
-                            {isDark ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-                        </button>
-                    )}
                 </div>
             </div>
         </header>

@@ -14,7 +14,7 @@ export function RevenueChart() {
         return revenue.history.map(item => {
             const date = new Date(item.date);
             return {
-                name: date.toLocaleString('default', { month: 'short' }), 
+                name: date.toLocaleString('default', { month: 'short' }),
                 revenue: item.value
             };
         });
