@@ -19,7 +19,6 @@ export const filterDeals = (deals: Deal[], filter: FilterOptions): Deal[] => {
         }
     }
 
-    // Time Range Filter
     if (filter.timeRange) {
         const now = new Date();
         const dealDate = (d: Deal) => new Date(d.createdAt);

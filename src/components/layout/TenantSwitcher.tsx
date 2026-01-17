@@ -52,8 +52,6 @@ export function TenantSwitcher({ className, isCollapsed }: TenantSwitcherProps) 
                                     width={24}
                                     height={24}
                                     className="object-cover"
-                                // Fix for handling next/image inside button if needed, 
-                                // but usually fine.
                                 />
                             </div>
                         ) : (

@@ -6,8 +6,7 @@ export const crmApi = api.injectEndpoints({
     endpoints: (build) => ({
         getDeals: build.query<Deal[], string>({
             queryFn: async (userId) => {
-                await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate network latency
-                // Filter mock data by userId (simulating backend)
+                await new Promise(resolve => setTimeout(resolve, 3000));
                 const data = MOCK_DEALS.filter(d => d.userId === userId || !d.userId);
                 return { data };
             },

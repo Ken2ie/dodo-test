@@ -23,7 +23,7 @@ export function RevenueForecastChart({ timeRange, status }: RevenueForecastChart
         .map(([date, count]) => ({
             name: new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
             deals: count,
-            revenue: count * 15000 // Mock avg value projection
+            revenue: count * 15000 
         }));
 
     if (deals.length > 0 && data.length === 0) {

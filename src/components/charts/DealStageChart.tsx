@@ -45,7 +45,6 @@ export function DealStageChart({ timeRange, status }: DealStageChartProps) {
         }));
 
     if (deals.length > 0 && data.length === 0) {
-        // Data exists but all filtered out or zero
         return (
             <Card className="h-full">
                 <CardHeader>

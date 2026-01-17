@@ -2,6 +2,6 @@ export interface Tenant {
     id: string;
     name: string;
     domain?: string;
-    avatar?: string; // URL to avatar image
+    avatar?: string; 
     plan: 'starter' | 'pro' | 'enterprise';
 }
