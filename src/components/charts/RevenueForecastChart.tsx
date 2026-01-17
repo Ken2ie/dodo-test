@@ -5,6 +5,8 @@ import { useGetDealsQuery } from "@/services/crm.api";
 import { useTenant } from "@/hooks/useTenant";
 import { filterDeals } from "@/utils/filterDeals";
 import { ChartEmptyState } from "./ChartEmptyState";
+import { selectRevenueForecastData } from "@/selectors/analytics.selectors";
+import { useMemo } from "react";
 
 interface RevenueForecastChartProps {
     timeRange?: string;
@@ -18,13 +20,7 @@ export function RevenueForecastChart({ timeRange, status }: RevenueForecastChart
     const filteredDeals = filterDeals(deals, { timeRange, status });
     const { dealsOverTime } = useCrmAnalytics(filteredDeals);
 
-    const data = Object.entries(dealsOverTime)
-        .sort(([dateA], [dateB]) => new Date(dateA).getTime() - new Date(dateB).getTime())
-        .map(([date, count]) => ({
-            name: new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-            deals: count,
-            revenue: count * 15000 // Mock avg value projection
-        }));
+    const data = useMemo(() => selectRevenueForecastData(dealsOverTime), [dealsOverTime]);
 
     if (deals.length > 0 && data.length === 0) {
         return (

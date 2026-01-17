@@ -41,7 +41,7 @@ export function StatCard({ title, value, trend, trendDirection, comparedTo, clas
                         </div>
                     )}
                 </div>
-                {/* Visual-only Sparkline to match design */}
+               
                 <div className="mb-1">
                     <svg width="60" height="30" viewBox="0 0 60 30" fill="none" xmlns="http://www.w3.org/2000/svg" className="opacity-80">
                         {trendDirection === 'up' && (

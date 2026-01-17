@@ -6,6 +6,7 @@ import { formatCurrency, formatCompactNumber } from "@/utils/format";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import { useMemo } from "react";
 import { ChartEmptyState } from "./ChartEmptyState";
+import { selectRevenueChartData } from "@/selectors/analytics.selectors";
 
 interface RevenueChartProps {
     timeRange?: string;
@@ -15,16 +16,7 @@ interface RevenueChartProps {
 export function RevenueChart({ timeRange, status }: RevenueChartProps) {
     const { revenue, isLoading } = useDashboardStats(timeRange, status);
 
-    const chartData = useMemo(() => {
-        if (!revenue?.history) return [];
-        return revenue.history.map(item => {
-            const date = new Date(item.date);
-            return {
-                name: date.toLocaleString('default', { month: 'short' }),
-                revenue: item.value
-            };
-        });
-    }, [revenue]);
+    const chartData = useMemo(() => selectRevenueChartData(revenue), [revenue]);
 
     if (isLoading) {
         return (

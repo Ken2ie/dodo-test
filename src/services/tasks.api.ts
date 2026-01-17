@@ -7,7 +7,6 @@ export const tasksApi = api.injectEndpoints({
     endpoints: (build) => ({
         getTasks: build.query<Task[], string>({
             queryFn: async (tenantId) => {
-                // Filter mock data by tenantId (simulating backend)
                 const data = MOCK_TASKS.filter(t => t.tenantId === tenantId || !t.tenantId);
                 return { data };
             },
