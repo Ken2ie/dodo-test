@@ -1,0 +1,98 @@
+﻿
+> frontend@0.1.0 build
+> next build
+
+Ôû▓ Next.js 16.1.2 (Turbopack)
+
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 11.5s
+  Running TypeScript ...
+node.exe : Failed to 
+compile.
+At C:\Program Files\n
+odejs\npm.ps1:29 
+char:3
++   & $NODE_EXE 
+$NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (Failed    
+ to compile.:Stri    
+ng) [], RemoteEx    
+ception
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+
+./src/components/dash
+board/RevenueChart.ts
+x:54:33
+Type error: Type 
+'(value: number) => 
+[string, "Revenue"]' 
+is not assignable to 
+type 
+'Formatter<number, 
+"Revenue">'.
+  Types of 
+parameters 'value' 
+and 'value' are 
+incompatible.
+    Type 'number | 
+undefined' is not 
+assignable to type 
+'number'.
+      Type 
+'undefined' is not 
+assignable to type 
+'number'.
+
+[0m [90m 52 |[39m 
+                     
+       [33m/[39m[3
+3m>[39m
+ [90m 53 |[39m     
+                     
+   [33m<[39m[33mTo
+oltip[39m
+[31m[1m>[22m[39m
+[90m 54 |[39m       
+                     
+     formatter[33m=
+[39m{(value[33m:[39
+m number) 
+[33m=>[39m [formatC
+urrency(value)[33m,
+[39m 
+[32m"Revenue"[39m]}
+ [90m    |[39m     
+                     
+       
+[31m[1m^[22m[39m
+ [90m 55 |[39m     
+                     
+       contentStyle[
+33m=[39m{{ borderRad
+ius[33m:[39m [32m'
+8px'[39m[33m,[39m 
+border[33m:[39m [3
+2m'none'[39m[33m,[
+39m 
+boxShadow[33m:[39m 
+[32m'0 4px 6px -1px 
+rgb(0 0 0 / 
+0.1)'[39m }}
+ [90m 56 |[39m     
+                     
+   [33m/[39m[33m>
+[39m
+ [90m 57 |[39m     
+                     
+   [33m<[39m[33mAr
+ea[39m[0m
+Next.js build worker 
+exited with code: 1 
+and signal: null

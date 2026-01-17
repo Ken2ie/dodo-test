@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sales CRM Dashboard
 
-## Getting Started
+A multi-tenant Sales CRM Dashboard built with **Next.js (App Router)**, **TypeScript**, **Tailwind**, **shadcn/ui**, and **Recharts**.
 
-First, run the development server:
+## 🚀 Getting Started
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Run the development server**:
+   ```bash
+    npm run dev
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Open [http://localhost:3000](http://localhost:3000)**.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🏗 Architecture & Design Decisions
 
-## Learn More
+### Component Reuse Strategy
+I prioritized **Composition** over configuration.
+- **UI Primitives**: `Card`, `Button`, `Input` are dumb components (shadcn/ui style), styled via `className` props (using `cn` utility).
+- **Composite Components**: `StatCard` encapsulates the "Label + Value + Trend" pattern but accepts slot-based content where needed. `TenantSwitcher` is portable and can be placed in Sidebar or Header.
 
-To learn more about Next.js, take a look at the following resources:
+### Custom Hooks vs HOCs
+I chose **Custom Hooks** as the primary logic abstraction layer.
+- **Why Hooks?**: They compose better than HOCs and avoid "wrapper hell". They allow for cleaner separation of concerns (Logic vs UI).
+- **Core Hooks**:
+    - `useTenant()`: Manages global tenant state (Zustand) and memoizes the current tenant object.
+    - `useCrmAnalytics(deals)`: Performs heavy data transformation (grouping by stage/source) using `useMemo` to ensure charts only re-render when data changes.
+    - `useDashboardStats()`: orchestrates data fetching (RTK Query) and loading states for the page.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### State Management
+- **Zustand**: Used for `tenantId` (Global Client State). It's simpler than Redux for single-value globals and persists easily.
+- **RTK Query**: Used for Server State (`crm.api.ts`, `analytics.api.ts`). It handles caching, deduplication, and tagging ('Deal').
+- **Context/Props**: Used for local UI state (e.g., specific chart config).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Data Flow & Charts
+**"Raw Data is not Chart-Ready"**
+1. **API Layer**: Returns raw `Deal[]` objects with dates and values.
+2. **Hook Layer**: `useCrmAnalytics` consumes `Deal[]` -> aggregates totals -> formats for Recharts (e.g., `dealsByStage`).
+3. **UI Layer**: `DealStageChart` receives processed data. It contains **NO** transformation logic, only rendering configuration.
 
-## Deploy on Vercel
+### Theming
+- Built with **Tailwind CSS**.
+- Charts use dynamic colors mapped to Deal Stages (e.g., "Won" = Green, "Lost" = Red).
+- Layout uses `grid` and `flex` for responsiveness.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📂 Folder Structure
+- `/app`: Next.js Routes.
+- `/components/ui`: Reusable primitives (Card, Button).
+- `/components/dashboard`: specialized layout components (RevenueStats).
+- `/components/charts`: Pure visualization components.
+- `/hooks`: Logic encapsulations (`useCrmAnalytics`, `useTenant`).
+- `/services`: RTK Query API definitions.
+- `/store`: Zustand stores.
